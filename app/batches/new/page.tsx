@@ -180,7 +180,7 @@ export default function NewBatch() {
             body: infoData,
             theme: 'plain',
             styles: { fontSize: 10, cellPadding: 2 },
-            columnStyles: { 0: { fontStyle: 'bold', width: 40 } }
+            columnStyles: { 0: { fontStyle: 'bold', cellWidth: 40 } }
         });
 
         // Payments Table
@@ -198,7 +198,7 @@ export default function NewBatch() {
             startY: (doc as any).lastAutoTable.finalY + 20,
             head: tableHeaders,
             body: tableRows,
-            headStyles: { fillStyle: 'F', fillColor: [249, 115, 22] },
+            headStyles: { fillColor: [249, 115, 22] },
             styles: { fontSize: 9 }
         });
 

@@ -53,8 +53,8 @@ export default function LandingPage() {
             The Standard for Flare Payouts
           </span>
           <h1 className="text-5xl md:text-7xl font-bold mb-8 leading-tight">
-            Batch payouts on Flare with <br />
-            <span className="text-brand">audit-grade</span> records.
+            Batch payouts on Flare with 
+            <span className="text-brand"> audit-grade</span> records.
           </h1>
           <p className="text-secondary text-lg md:text-xl mb-12 max-w-2xl mx-auto leading-relaxed">
             Simple, secure, and verifiable. The easiest way to manage multi-address payouts
