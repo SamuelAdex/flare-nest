@@ -44,6 +44,7 @@ type AppContextType = {
     connecting: boolean;
     hydrating: boolean;
     connectWallet: () => Promise<void>;
+    disconnect: () => Promise<void>;
     sendFLR: (to: string, amount: string) => Promise<string>;
     anchorProof: (
         batchId: string,
@@ -121,6 +122,16 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     /* =======================
        WalletConnect Init
     ======================= */
+
+    const disconnect = async () => {
+        if (wcProvider) {
+            await wcProvider.disconnect();
+            setWcProvider(null);
+        }
+        setProvider(null);
+        setSigner(null);
+        setAddress(null);
+    };
 
     const connectWallet = async () => {
         if (typeof window !== "undefined" && window.ethereum) {
@@ -244,6 +255,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
                 connecting,
                 hydrating,
                 connectWallet,
+                disconnect,
                 sendFLR,
                 anchorProof,
             }}

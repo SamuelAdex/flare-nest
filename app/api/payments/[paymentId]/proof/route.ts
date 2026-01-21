@@ -61,8 +61,8 @@ export async function POST(
 
     // 💾 Flexibly find the reference (id, receipt_id, proofReference, or reference)
     // Adding receipt_id as it's common in ProofRails ISO responses
-    const proofRef = proof.receipt_id || proof.id || proof.proofReference || proof.reference || "N/A";
-    const bundleUrl = proof.bundle_url || proof.bundleDownloadUrl || proof.bundle_download_url || "";
+    const proofRef = proof.receipt_id || proof.id || proof.proofReference || "N/A";
+    const bundleUrl = proof.bundle_url || "";
 
     payment.proofReference = proofRef;
     payment.proofBundleUrl = bundleUrl;

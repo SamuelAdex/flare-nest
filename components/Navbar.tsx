@@ -7,7 +7,7 @@ import { cn, serializeAddress } from "@/lib/utils";
 import { useApp } from "@/context/AppContext";
 
 export default function Navbar() {
-    const { address } = useApp();
+    const { address, disconnect } = useApp();
     const pathname = usePathname();
 
     // Only show wallet stuff on /dashboard and /batches
@@ -36,9 +36,9 @@ export default function Navbar() {
                                 <Wallet className="w-4 h-4 text-secondary" />
                                 <span className="text-sm font-mono text-primary">{serializeAddress(address!)}</span>
                             </div>
-                            <div className="w-9 h-9 rounded-full bg-brand/20 flex items-center justify-center border border-brand/30">
+                            <button onClick={disconnect} className="w-9 h-9 rounded-full bg-brand/20 flex items-center justify-center border border-brand/30 hover:bg-brand/30 transition-colors" title="Disconnect Wallet">
                                 <User className="w-5 h-5 text-brand" />
-                            </div>
+                            </button>
                         </>
                     )}
                     {!isAdmin && pathname === "/recipient" && (

@@ -10,65 +10,45 @@ type ProofRailsPaymentPayload = {
     memo?: string;
 };
 
-interface RecordTipRequestBody {
-    tip_tx_hash: string;
-    chain: string;
-    amount: number;
-    currency: string;
-    sender_wallet: string;
-    receiver_wallet: string;
-    reference: string;
-}
+import ProofRails from '@proofrails/sdk';
+
+const proofrails = new ProofRails({
+    apiKey: process.env.PROOFRAILS_API_KEY || "",
+    network: "coston2"
+});
 
 export async function createProofRailsRecord(
     payload: ProofRailsPaymentPayload
 ) {
-    const controller = new AbortController();
-    const timeout = setTimeout(() => controller.abort(), 15_000);
-
     try {
-        const baseUrl = process.env.PROOFRAILS_API_URL?.endsWith("/")
-            ? process.env.PROOFRAILS_API_URL.slice(0, -1)
-            : process.env.PROOFRAILS_API_URL;
+        console.log("Generating proof via SDK for:", payload.paymentId);
 
-        const res = await fetch(
-            `${baseUrl}/iso/record-tip`,
-            {
-                method: "POST",
-                signal: controller.signal,
-                headers: {
-                    "X-API-Key": `${process.env.PROOFRAILS_API_KEY}`,
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify({
-                    tip_tx_hash: payload.txHash,
-                    chain: payload.network === "coston2" ? "coston2" : payload.network,
-                    amount: Number(payload.amount),
-                    currency: payload.asset === "FLR" ? "FLR" : payload.asset,
-                    sender_wallet: payload.sender.address,
-                    receiver_wallet: payload.recipient.address,
-                    reference: payload.memo || payload.paymentId,
-                }),
-            }
-        );
-
-        console.log("ProofRails Request:", {
-            url: `${baseUrl}/iso/record-tip`,
-            chain: payload.network === "coston2" ? "coston2" : payload.network,
-            currency: payload.asset === "FLR" ? "FLR" : payload.asset,
+        const receipt = await proofrails.templates.payment({
             amount: Number(payload.amount),
+            from: payload.sender.address,
+            to: payload.recipient.address,
+            purpose: payload.memo || `Batch Payment ${payload.paymentId}`,
+            transactionHash: payload.txHash,
+            currency: payload.asset || "FLR"
         });
 
-        const data = await res.json();
-        console.log("ProofRails Response:", data);
+        console.log("ProofRails SDK Response:", receipt);
 
-        if (!res.ok) {
-            throw new Error(`ProofRails API error: ${JSON.stringify(data)}`);
-        }
+        // Normalize SDK response to match our app's expectations
+        return {
+            receipt_id: receipt.id,
+            proofReference: receipt.id,
+            bundle_url: receipt.bundleUrl || "",
+            status: receipt.status,
+            // Include other receipt properties as needed individually instead of spreading
+            id: receipt.id,
+            anchorTx: receipt.anchorTx,
+            bundleHash: receipt.bundleHash
+        };
 
-        return data;
-    } finally {
-        clearTimeout(timeout);
+    } catch (error: any) {
+        console.error("ProofRails SDK Error:", error);
+        throw new Error(`SDK Error: ${error.message}`);
     }
 }
 

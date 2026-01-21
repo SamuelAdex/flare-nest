@@ -36,8 +36,8 @@ export async function GET(
                 });
 
                 if (proof) {
-                    const proofRef = proof.receipt_id || proof.id || proof.proofReference || proof.reference || "N/A";
-                    const bundleUrl = proof.bundle_url || proof.bundleDownloadUrl || proof.bundle_download_url || "";
+                    const proofRef = proof.receipt_id || proof.id || proof.proofReference || "N/A";
+                    const bundleUrl = proof.bundle_url || "";
 
                     payment.proofReference = proofRef;
                     payment.proofBundleUrl = bundleUrl;

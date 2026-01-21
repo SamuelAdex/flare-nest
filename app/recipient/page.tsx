@@ -30,7 +30,7 @@ export default function RecipientPortal() {
                             const bData = await bRes.json();
                             return {
                                 ...p,
-                                batchTitle: bData.batch?.title || "Unnamed Batch"
+                                batchTitle: bData.title || "Unnamed Batch"
                             };
                         } catch (e) {
                             return { ...p, batchTitle: "Archived Batch" };
